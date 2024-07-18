@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Data;
+using System.Data.SqlClient;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace LibraryWebForm
 {
@@ -11,6 +14,8 @@ namespace LibraryWebForm
         {
             if (!IsPostBack)
             {
+                LoadGenres();
+
                 if (Context.User.Identity.IsAuthenticated)
                 {
                     LoginButton.Visible = false;
@@ -25,6 +30,28 @@ namespace LibraryWebForm
                     CartButton.Visible = false;
                     LogoutButton.Visible = false;
                 }
+            }
+        }
+
+        protected void LoadGenres()
+        {
+            DatabaseConnection db = new DatabaseConnection();
+            string sql = "SELECT GenreId, GenreName FROM Genre";
+            DataTable dt = db.LoadDL(sql);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                int genreId = (int)row["GenreId"];
+                string genreName = row["GenreName"].ToString();
+
+                var link = new HyperLink
+                {
+                    Text = genreName,
+                    NavigateUrl = $"~/Home.aspx?GenreId={genreId}"
+                };
+
+                GenreDropdown.Controls.Add(link);
+                GenreDropdown.Controls.Add(new Literal { Text = "<br/>" });
             }
         }
 
@@ -48,8 +75,11 @@ namespace LibraryWebForm
             string searchText = SearchBox.Text.Trim();
             if (!string.IsNullOrEmpty(searchText))
             {
-                // Redirect to search results page or handle search functionality
-                Response.Redirect($"~/SearchResults.aspx?q={searchText}");
+                // Store search text in Session
+                Session["SearchText"] = searchText;
+
+                // Redirect to Home page
+                Response.Redirect("~/Home.aspx");
             }
         }
     }

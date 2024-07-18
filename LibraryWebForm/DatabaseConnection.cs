@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Web;
+using System.Data.SqlClient;
 
 namespace LibraryWebForm
 {
@@ -11,43 +8,70 @@ namespace LibraryWebForm
     {
         string chuoikn = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""D:\Thuong Mai Dien Tu\Project\LibraryWebForm\LibraryWebForm\App_Data\Database.mdf"";Integrated Security=True";
         internal SqlConnection conn;
+
         public DatabaseConnection()
         {
             conn = new SqlConnection(chuoikn);
         }
+
         public int ThemXoaSua(string sql)
         {
-            SqlCommand comm = new SqlCommand(sql, conn);
+            SqlCommand command = new SqlCommand(sql, conn);
+            return ThemXoaSua(command);
+        }
+
+        public int ThemXoaSua(SqlCommand command)
+        {
+            command.Connection = conn;
             conn.Open();
-            int kq = comm.ExecuteNonQuery();
+            int kq = command.ExecuteNonQuery();
             conn.Close();
             return kq;
         }
+
         public DataTable LoadDL(string sql)
         {
-            SqlDataAdapter da = new SqlDataAdapter(sql, conn);
+            SqlCommand command = new SqlCommand(sql, conn);
+            return LoadDL(command);
+        }
+
+        public DataTable LoadDL(SqlCommand command)
+        {
+            command.Connection = conn;
+            SqlDataAdapter da = new SqlDataAdapter(command);
             DataTable dt = new DataTable();
             da.Fill(dt);
             return dt;
         }
+
         public object LayGT(string sql)
         {
-            SqlCommand comm = new SqlCommand(sql, conn);
+            SqlCommand command = new SqlCommand(sql, conn);
+            return LayGT(command);
+        }
+
+        public object LayGT(SqlCommand command)
+        {
+            command.Connection = conn;
             conn.Open();
-            object kq = comm.ExecuteScalar();
+            object kq = command.ExecuteScalar();
             conn.Close();
             return kq;
         }
 
         public string LayDL(string sql)
         {
-            using (SqlConnection conn = new SqlConnection(chuoikn))
-            {
-                SqlCommand command = new SqlCommand(sql, conn);
-                conn.Open();
-                object result = command.ExecuteScalar();
-                return result != null ? result.ToString() : "Not found";
-            }
+            SqlCommand command = new SqlCommand(sql, conn);
+            return LayDL(command);
+        }
+
+        public string LayDL(SqlCommand command)
+        {
+            command.Connection = conn;
+            conn.Open();
+            object result = command.ExecuteScalar();
+            conn.Close();
+            return result != null ? result.ToString() : "Not found";
         }
     }
 }

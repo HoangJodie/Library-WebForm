@@ -12,7 +12,7 @@
         }
 
         .book {
-            width: 200px;
+            width: calc(20% - 30px); /* Adjusting for margins */
             margin: 15px;
             text-align: center;
             border: 1px solid #ddd;
@@ -38,10 +38,17 @@
         .book:hover {
             transform: scale(1.05);
         }
+
+        .search-result {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h1>Danh sách các cuốn sách</h1>
+    <div class="search-result" runat="server" id="SearchResult"></div>
     <div class="book-container" runat="server" id="BookContainer">
         <!-- Nội dung sẽ được thêm động từ code-behind -->
     </div>

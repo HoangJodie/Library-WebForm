@@ -20,7 +20,8 @@
         }
 
         .logo img {
-            max-height: 50px;
+            max-height: 100px;
+            width:auto;
         }
 
         .search {
@@ -57,7 +58,7 @@
             background-color: #333;
         }
 
-        .nav-button {
+        .nav-button, .nav-dropdown {
             margin: 0 10px;
             padding: 10px 20px;
             color: white;
@@ -66,9 +67,45 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .nav-button:hover {
+        .nav-button:hover, .nav-dropdown:hover {
+            background-color: #555;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #444;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #555;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .nav-dropdown {
             background-color: #555;
         }
     </style>
@@ -89,7 +126,12 @@
                 </div>
                 <div class="nav-container">
                     <asp:LinkButton ID="HomeButton" runat="server" CssClass="nav-button" PostBackUrl="~/Home.aspx">Trang chủ</asp:LinkButton>
-                    <asp:LinkButton ID="CategoriesButton" runat="server" CssClass="nav-button" PostBackUrl="~/Categories.aspx">Thể loại</asp:LinkButton>
+                    <div class="dropdown">
+                        <asp:LinkButton ID="CategoriesButton" runat="server" CssClass="nav-dropdown">Thể loại</asp:LinkButton>
+                        <div class="dropdown-content" runat="server" id="GenreDropdown">
+                            <!-- Genres will be loaded here -->
+                        </div>
+                    </div>
                     <asp:LinkButton ID="RegisterButton" runat="server" CssClass="nav-button" PostBackUrl="~/Register.aspx">Đăng ký</asp:LinkButton>
                     <asp:LinkButton ID="LoginButton" runat="server" CssClass="nav-button" PostBackUrl="~/Login.aspx">Đăng nhập</asp:LinkButton>
                     <asp:LinkButton ID="CartButton" runat="server" CssClass="nav-button" PostBackUrl="~/Cart.aspx" Visible="false">Giỏ hàng</asp:LinkButton>

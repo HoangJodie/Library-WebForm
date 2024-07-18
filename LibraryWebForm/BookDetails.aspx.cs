@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.Web.UI;
 
 namespace LibraryWebForm
@@ -31,7 +32,7 @@ namespace LibraryWebForm
                     AuthorLabel.Text = row["Author"].ToString();
                     PublisherLabel.Text = row["Publisher"].ToString();
                     PublicationYearLabel.Text = row["PublicationYear"].ToString();
-                    GenreLabel.Text = row["Genre"].ToString();
+                    GenreLabel.Text = row["GenreId"].ToString();
                     DescriptionLabel.Text = row["Description"].ToString();
                     CoverImage.ImageUrl = row["CoverImageUrl"].ToString();
                 }
@@ -40,28 +41,58 @@ namespace LibraryWebForm
 
         protected void RentButton_Click(object sender, EventArgs e)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                // Redirect to login page if the user is not authenticated
+                Response.Redirect("~/Login.aspx");
+                return;
+            }
+
             int bookId = (int)ViewState["BookID"];
-            // Add the book to the cart
-            if (Session["Cart"] == null)
+            int userId = GetUserId(); // Assuming you have a method to get the current user's ID
+
+            // Add the book to the CartItems table
+            DatabaseConnection db = new DatabaseConnection();
+            string sql = "INSERT INTO CartItems (UserID, BookID, Quantity) VALUES (@UserID, @BookID, @Quantity)";
+
+            using (SqlCommand cmd = new SqlCommand(sql, db.conn))
             {
-                Session["Cart"] = new DataTable();
-                ((DataTable)Session["Cart"]).Columns.Add("BookID", typeof(int));
-                ((DataTable)Session["Cart"]).Columns.Add("Title", typeof(string));
-                ((DataTable)Session["Cart"]).Columns.Add("CoverImageUrl", typeof(string));
+                cmd.Parameters.AddWithValue("@UserID", userId);
+                cmd.Parameters.AddWithValue("@BookID", bookId);
+                cmd.Parameters.AddWithValue("@Quantity", 1);
+
+                db.conn.Open();
+                cmd.ExecuteNonQuery();
+                db.conn.Close();
             }
 
-            DataTable cart = (DataTable)Session["Cart"];
-            DataRow[] existingRows = cart.Select($"BookID = {bookId}");
-            if (existingRows.Length == 0)
-            {
-                DataRow newRow = cart.NewRow();
-                newRow["BookID"] = bookId;
-                newRow["Title"] = TitleLabel.Text;
-                newRow["CoverImageUrl"] = CoverImage.ImageUrl;
-                cart.Rows.Add(newRow);
-            }
-
+            // Redirect to cart page
             Response.Redirect("Cart.aspx");
+        }
+
+        private int GetUserId()
+        {
+            // Replace this with the actual logic to get the current user's ID
+            // For example, you can query the Users table to get the UserID by User.Identity.Name
+            string username = User.Identity.Name;
+            DatabaseConnection db = new DatabaseConnection();
+            string sql = "SELECT UserID FROM Users WHERE Username = @Username";
+            using (SqlCommand cmd = new SqlCommand(sql, db.conn))
+            {
+                cmd.Parameters.AddWithValue("@Username", username);
+                db.conn.Open();
+                object result = cmd.ExecuteScalar();
+                db.conn.Close();
+
+                if (result != null)
+                {
+                    return Convert.ToInt32(result);
+                }
+                else
+                {
+                    throw new Exception("User not found.");
+                }
+            }
         }
     }
 }
