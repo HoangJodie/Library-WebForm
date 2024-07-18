@@ -1,0 +1,105 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Master.master.cs" Inherits="LibraryWebForm.Master" %>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title></title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #e7e7e7;
+        }
+
+        .logo img {
+            max-height: 50px;
+        }
+
+        .search {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box {
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-button {
+            margin-left: 5px;
+            padding: 5px 10px;
+            font-size: 14px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #0056b3;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+            background-color: #333;
+        }
+
+        .nav-button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            background-color: #444;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .nav-button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <!-- Header -->
+            <header>
+                <div class="header-container">
+                    <div class="logo">
+                        <asp:Image ID="LogoImage" runat="server" ImageUrl="~/Images/logo.png" AlternateText="Logo" />
+                    </div>
+                    <div class="search">
+                        <asp:TextBox ID="SearchBox" runat="server" CssClass="search-box" Placeholder="Search..." />
+                        <asp:Button ID="SearchButton" runat="server" Text="Search" CssClass="search-button" OnClick="SearchButton_Click" />
+                    </div>
+                </div>
+                <div class="nav-container">
+                    <asp:LinkButton ID="HomeButton" runat="server" CssClass="nav-button" PostBackUrl="~/Home.aspx">Trang chủ</asp:LinkButton>
+                    <asp:LinkButton ID="CategoriesButton" runat="server" CssClass="nav-button" PostBackUrl="~/Categories.aspx">Thể loại</asp:LinkButton>
+                    <asp:LinkButton ID="RegisterButton" runat="server" CssClass="nav-button" PostBackUrl="~/Register.aspx">Đăng ký</asp:LinkButton>
+                    <asp:LinkButton ID="LoginButton" runat="server" CssClass="nav-button" PostBackUrl="~/Login.aspx">Đăng nhập</asp:LinkButton>
+                    <asp:LinkButton ID="CartButton" runat="server" CssClass="nav-button" PostBackUrl="~/Cart.aspx" Visible="false">Giỏ hàng</asp:LinkButton>
+                    <asp:LinkButton ID="LogoutButton" runat="server" CssClass="nav-button" OnClick="LogoutButton_Click" Visible="false">Đăng xuất</asp:LinkButton>
+                </div>
+            </header>
+            <!-- ContentPlaceHolder -->
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </form>
+</body>
+</html>
